@@ -1,5 +1,5 @@
 let puzzles=[],used=[];
-let difficulty="easy";
+let xp=0,streak=0,difficulty="easy";
 
 fetch('data/puzzles.json').then(r=>r.json()).then(d=>{puzzles=d;});
 
@@ -25,9 +25,18 @@ function next(){
 function check(ans){
  let fb=document.getElementById("feedback");
  if(ans===cur.answer){
+  xp+=10; streak++;
   fb.innerText="Correct!";
  }else{
+  streak=0;
   fb.innerText=cur.explanation;
  }
+
+ if(xp>50) difficulty="medium";
+ if(xp>120) difficulty="hard";
+
+ document.getElementById("xp").innerText=xp;
+ document.getElementById("streak").innerText=streak;
+
  next();
 }
