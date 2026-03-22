@@ -2,19 +2,27 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Learning IQ App</title>
+<title>Ultimate Kids IQ App</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <div class="topbar">
   <span id="xp">XP: 0</span>
-  <span id="level">Level: Easy</span>
+  <span id="level">Level: easy</span>
   <span id="streak">🔥 0</span>
 </div>
 
+<div class="character" id="character">🐵</div>
+
+<div id="menu">
+  <button onclick="startGame()">🎮 Play</button>
+  <button onclick="openDashboard()">📊 Dashboard</button>
+</div>
+
 <div id="game"></div>
-<div id="report"></div>
+<div id="dashboard"></div>
 
 <script src="puzzles.js"></script>
 <script src="app.js"></script>

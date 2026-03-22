@@ -1,5 +1,69 @@
-body{font-family:Arial;text-align:center;background:#f7f7f7;}
-.topbar{display:flex;justify-content:space-around;background:white;padding:10px;}
-.puzzle{background:white;margin:20px;padding:20px;border-radius:20px;}
-button{margin:10px;padding:12px;border:none;border-radius:10px;background:#4d96ff;color:white;}
-.report{background:white;margin:20px;padding:15px;border-radius:15px;}
+body{
+  font-family:Arial;
+  text-align:center;
+  background:linear-gradient(#a1c4fd,#c2e9fb);
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-around;
+  padding:10px;
+  background:white;
+  border-radius:10px;
+}
+
+.character{
+  font-size:60px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-10px);}
+}
+
+.puzzle{
+  background:white;
+  margin:20px;
+  padding:20px;
+  border-radius:20px;
+}
+
+button{
+  margin:10px;
+  padding:15px;
+  font-size:18px;
+  border:none;
+  border-radius:12px;
+  background:#58cc02;
+  color:white;
+  transition:0.2s;
+}
+
+button:hover{
+  transform:scale(1.1);
+}
+
+.correct{
+  animation: pop 0.5s;
+  background:green !important;
+}
+
+.wrong{
+  animation: shake 0.5s;
+  background:red !important;
+}
+
+@keyframes pop{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.3);}
+  100%{transform:scale(1);}
+}
+
+@keyframes shake{
+  0%{transform:translateX(0);}
+  25%{transform:translateX(-5px);}
+  50%{transform:translateX(5px);}
+  75%{transform:translateX(-5px);}
+  100%{transform:translateX(0);}
+}

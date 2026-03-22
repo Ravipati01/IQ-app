@@ -1,52 +1,54 @@
-let xp=0,streak=0;
-let difficulty="easy";
-let stats={math:{c:0,w:0},story:{c:0,w:0},logic:{c:0,w:0},emotion:{c:0,w:0}};
+let xp=0,streak=0,difficulty="easy";
+let stats={math:{c:0,w:0},visual:{c:0,w:0},story:{c:0,w:0}};
+let weak=[];
 
-const types=["math","story","logic","emotion"];
-
-function nextType(){
-return types[Math.floor(Math.random()*types.length)];
-}
+function startGame(){show();}
 
 function show(){
-let type=nextType();
-let p=getPuzzle(type,difficulty);
+let p=getPuzzle(difficulty);
 window.current=p;
 
-document.getElementById("game").innerHTML=`
-<div class="puzzle">
+if(p.type==="math"||p.type==="story"){
+document.getElementById("game").innerHTML=`<div class="puzzle">
 <h2>${p.q}</h2>
-${p.o.map(o=>`<button onclick="check('${o}')">${o}</button>`).join("")}
-<div id="fb"></div>
-</div>`;
+${p.o.map(o=>`<button onclick="check('${o}',this)">${o}</button>`).join("")}
+<div id="fb"></div></div>`;
+}
+else if(p.type==="visual"){
+document.getElementById("game").innerHTML=`<div class="puzzle">
+<h2>👀 Find different</h2>
+${p.o.map(o=>`<button onclick="check('${o}',this)">${o}</button>`).join("")}
+<div id="fb"></div></div>`;
+}
 }
 
-function check(ans){
+function check(ans,btn){
 let p=window.current;
 let fb=document.getElementById("fb");
+let char=document.getElementById("character");
 
 if(ans===p.a){
-xp+=5;streak++;
-stats[p.concept].c++;
-fb.innerHTML="🎉 Correct!";
+btn.classList.add("correct");
+xp+=5;streak++;stats[p.concept].c++;weak=[];
+char.innerText="😄";
+fb.innerHTML="🎉 Great!";
 }else{
-streak=0;
-stats[p.concept].w++;
-fb.innerHTML="❌ Try again!";
+btn.classList.add("wrong");
+streak=0;stats[p.concept].w++;weak=[p.concept];
+char.innerText="😢";
+fb.innerHTML=`❌ ${p.exp}`;
 }
 
 adapt();
-updateUI();
 save();
-setTimeout(show,1000);
+updateUI();
+setTimeout(()=>{char.innerText="🐵";show();},1000);
 }
 
 function adapt(){
-let totalCorrect=Object.values(stats).reduce((a,b)=>a+b.c,0);
-
-if(totalCorrect>5)difficulty="medium";
-if(totalCorrect>15)difficulty="hard";
-
+let total=Object.values(stats).reduce((a,b)=>a+b.c,0);
+if(total>5)difficulty="medium";
+if(total>15)difficulty="hard";
 document.getElementById("level").innerText="Level:"+difficulty;
 }
 
@@ -57,16 +59,21 @@ localStorage.setItem("stats",JSON.stringify(stats));
 function updateUI(){
 document.getElementById("xp").innerText="XP:"+xp;
 document.getElementById("streak").innerText="🔥"+streak;
-showReport();
 }
 
-function showReport(){
-let html="<div class='report'><h3>Progress</h3>";
-for(let k in stats){
-html+=`${k}: ✔ ${stats[k].c} ❌ ${stats[k].w}<br>`;
+function openDashboard(){
+let s=JSON.parse(localStorage.getItem("stats"))||stats;
+document.getElementById("dashboard").innerHTML=`<canvas id="chart"></canvas>`;
+new Chart(document.getElementById("chart"),{
+type:"bar",
+data:{
+labels:Object.keys(s),
+datasets:[
+{label:"Correct",data:Object.values(s).map(x=>x.c)},
+{label:"Wrong",data:Object.values(s).map(x=>x.w)}
+]
 }
-html+="</div>";
-document.getElementById("report").innerHTML=html;
+});
 }
 
 show();
