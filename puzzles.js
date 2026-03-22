@@ -1,11 +1,27 @@
-const puzzles=[
-{question:"🍎+🍎=?",options:["1","2","3"],answer:"2",difficulty:"easy"},
-{question:"🐶 says?",options:["Meow","Bark","Moo"],answer:"Bark",difficulty:"easy"},
-{question:"🟦🟨🟦🟨?",options:["🟦","🟨","🟥"],answer:"🟦",difficulty:"easy"},
+function rand(n){return Math.floor(Math.random()*n);}
 
-{question:"1,3,5,?",options:["6","7","8"],answer:"7",difficulty:"medium"},
-{question:"5,10,20,?",options:["30","40","50"],answer:"40",difficulty:"medium"},
+function math(d){
+let max = d==="hard"?50:d==="medium"?20:10;
+let a=rand(max),b=rand(max);
+return {type:"math",q:`${a}+${b}?`,o:[a+b,a+b+1,a+b-1].map(String),a:String(a+b),concept:"math"};
+}
 
-{question:"2,4,8,16,?",options:["24","32","20"],answer:"32",difficulty:"hard"},
-{question:"Keys but no locks?",options:["Piano","Door","Car"],answer:"Piano",difficulty:"hard"}
-];
+function story(){
+let a=rand(10)+3,b=rand(5)+1;
+return {type:"story",q:`🍎 ${a} apples give ${b}?`,o:[a-b,a-b+1,a-b-1].map(String),a:String(a-b),concept:"story"};
+}
+
+function logic(){
+return {type:"logic",q:"1,3,5,?",o:["6","7","8"],a:"7",concept:"logic"};
+}
+
+function emotion(){
+return {type:"emotion",q:"Friend sad 😢?",o:["Help","Ignore","Laugh"],a:"Help",concept:"emotion"};
+}
+
+function getPuzzle(type,d){
+if(type==="math")return math(d);
+if(type==="story")return story();
+if(type==="logic")return logic();
+if(type==="emotion")return emotion();
+}

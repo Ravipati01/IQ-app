@@ -1,74 +1,72 @@
-let currentIndex = 0;
-let score = 0;
-let stars = 0;
-let difficultyLevel = "easy";
+let xp=0,streak=0;
+let difficulty="easy";
+let stats={math:{c:0,w:0},story:{c:0,w:0},logic:{c:0,w:0},emotion:{c:0,w:0}};
+
+const types=["math","story","logic","emotion"];
+
+function nextType(){
+return types[Math.floor(Math.random()*types.length)];
+}
+
+function show(){
+let type=nextType();
+let p=getPuzzle(type,difficulty);
+window.current=p;
+
+document.getElementById("game").innerHTML=`
+<div class="puzzle">
+<h2>${p.q}</h2>
+${p.o.map(o=>`<button onclick="check('${o}')">${o}</button>`).join("")}
+<div id="fb"></div>
+</div>`;
+}
+
+function check(ans){
+let p=window.current;
+let fb=document.getElementById("fb");
+
+if(ans===p.a){
+xp+=5;streak++;
+stats[p.concept].c++;
+fb.innerHTML="🎉 Correct!";
+}else{
+streak=0;
+stats[p.concept].w++;
+fb.innerHTML="❌ Try again!";
+}
+
+adapt();
+updateUI();
+save();
+setTimeout(show,1000);
+}
+
+function adapt(){
+let totalCorrect=Object.values(stats).reduce((a,b)=>a+b.c,0);
+
+if(totalCorrect>5)difficulty="medium";
+if(totalCorrect>15)difficulty="hard";
+
+document.getElementById("level").innerText="Level:"+difficulty;
+}
+
+function save(){
+localStorage.setItem("stats",JSON.stringify(stats));
+}
 
 function updateUI(){
-document.getElementById("score").innerText="Score: "+score;
-document.getElementById("level").innerText="Level: "+difficultyLevel.toUpperCase();
-document.getElementById("stars").innerText="⭐ "+stars+" Stars";
+document.getElementById("xp").innerText="XP:"+xp;
+document.getElementById("streak").innerText="🔥"+streak;
+showReport();
 }
 
-function showPuzzle(){
-const game=document.getElementById("game");
-const nextBtn=document.getElementById("nextBtn");
-nextBtn.style.display="none";
-
-const filtered=puzzles.filter(p=>p.difficulty===difficultyLevel);
-
-if(currentIndex>=filtered.length){showDashboard();return;}
-
-const p=filtered[currentIndex];
-
-game.innerHTML=`<div class="puzzle">
-<h2>${p.question}</h2>
-${p.options.map(o=>`<button onclick="checkAnswer('${o}')">${o}</button>`).join("")}
-<p id="feedback"></p>
-</div>`;
-
-updateUI();
-updateProgress();
+function showReport(){
+let html="<div class='report'><h3>Progress</h3>";
+for(let k in stats){
+html+=`${k}: ✔ ${stats[k].c} ❌ ${stats[k].w}<br>`;
+}
+html+="</div>";
+document.getElementById("report").innerHTML=html;
 }
 
-function checkAnswer(sel){
-const filtered=puzzles.filter(p=>p.difficulty===difficultyLevel);
-const p=filtered[currentIndex];
-const fb=document.getElementById("feedback");
-
-if(sel===p.answer){
-fb.innerHTML="<span class='correct'>✅ Correct!</span>";
-score+=10;
-stars+=1;
-document.getElementById("nextBtn").style.display="inline-block";
-
-if(score>=50 && difficultyLevel==="easy"){difficultyLevel="medium";currentIndex=0;}
-else if(score>=120 && difficultyLevel==="medium"){difficultyLevel="hard";currentIndex=0;}
-
-}else{
-fb.innerHTML="<span class='wrong'>❌ Try again!</span>";
-}
-
-updateUI();
-}
-
-function nextPuzzle(){
-currentIndex++;
-showPuzzle();
-}
-
-document.getElementById("nextBtn").addEventListener("click",nextPuzzle);
-
-function updateProgress(){
-let progress=((currentIndex+1)/10)*100;
-document.getElementById("progress").style.width=progress+"%";
-}
-
-function showDashboard(){
-document.getElementById("game").innerHTML=`<h2>🎉 Game Over</h2><p>Score: ${score}</p><button onclick="restartGame()">Play Again</button>`;
-}
-
-function restartGame(){
-currentIndex=0;score=0;stars=0;difficultyLevel="easy";showPuzzle();
-}
-
-showPuzzle();
+show();
