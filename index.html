@@ -2,29 +2,23 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate Kids IQ App</title>
+<title>IQ App Fixed</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<div class="topbar">
-  <span id="xp">XP: 0</span>
-  <span id="level">Level: easy</span>
-  <span id="streak">🔥 0</span>
+<div id="welcome">
+<h1>🐵 Brain Game</h1>
+<button onclick="startGame()">Start</button>
 </div>
 
-<div class="character" id="character">🐵</div>
-
-<div id="menu">
-  <button onclick="startGame()">🎮 Play</button>
-  <button onclick="openDashboard()">📊 Dashboard</button>
+<div id="game" style="display:none;">
+<h3 id="category"></h3>
+<h2 id="question"></h2>
+<div id="options"></div>
+<p id="feedback"></p>
 </div>
 
-<div id="game"></div>
-<div id="dashboard"></div>
-
-<script src="puzzles.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
